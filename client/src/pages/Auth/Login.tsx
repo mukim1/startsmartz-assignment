@@ -2,10 +2,10 @@ import React from 'react';
 import { Link } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuth } from '../context/AuthContext';
-import { loginSchema } from '../validation/schema';
-import type { LoginFormData } from '../types';
-import '../styles/Auth.css';
+import { useAuth } from '@/context/AuthContext';
+import { loginSchema } from '@/validation/schema';
+import type { LoginFormData } from '@/types';
+import styles from './style.module.css';
 
 const LoginPage: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
@@ -24,49 +24,51 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form-container">
+    <div className={styles.authContainer}>
+      <div className={styles.authFormContainer}>
         <h2>Log In</h2>
         
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className={styles.errorMessage}>{error}</div>}
         
-        <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
-          <div className="form-group">
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.authForm}>
+          <div className={styles.formGroup}>
             <label htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
               {...register('email')}
               disabled={isLoading}
+              placeholder="your@email.com"
             />
             {errors.email && (
-              <span className="error-text">{errors.email.message}</span>
+              <span className={styles.errorText}>{errors.email.message}</span>
             )}
           </div>
 
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <label htmlFor="password">Password</label>
             <input
               id="password"
               type="password"
               {...register('password')}
               disabled={isLoading}
+              placeholder="••••••••"
             />
             {errors.password && (
-              <span className="error-text">{errors.password.message}</span>
+              <span className={styles.errorText}>{errors.password.message}</span>
             )}
           </div>
 
           <button 
             type="submit" 
-            className="submit-button"
+            className={styles.submitButton}
             disabled={isLoading}
           >
             {isLoading ? 'Logging in...' : 'Log In'}
           </button>
         </form>
 
-        <div className="auth-footer">
+        <div className={styles.authFooter}>
           Don't have an account? <Link to="/signup">Sign Up</Link>
         </div>
       </div>

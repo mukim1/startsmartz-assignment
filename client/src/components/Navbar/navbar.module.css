@@ -1,0 +1,146 @@
+@import '@/styles/variables.module.css';
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-8);
+  background-color: var(--primary-dark);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.navbarBrand {
+  display: flex;
+  align-items: center;
+}
+
+.navbarLogo {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.navbarLogo svg {
+  width: 24px;
+  height: 24px;
+}
+
+.navbarMenu {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+}
+
+.navbarItem {
+  position: relative;
+}
+
+.navbarLink {
+  color: var(--text-primary);
+  font-weight: 500;
+  text-decoration: none;
+  padding: var(--space-2) 0;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.navbarLink:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.navbarLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent);
+  transition: width var(--transition-normal);
+}
+
+.navbarLink:hover::after {
+  width: 100%;
+}
+
+.signupLink {
+  color: var(--text-primary);
+  background-color: var(--secondary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--secondary);
+  transition: all var(--transition-fast);
+}
+
+.signupLink:hover {
+  color: var(--text-primary);
+  background-color: var(--secondary-dark);
+  text-decoration: none;
+}
+
+.signupLink::after {
+  display: none;
+}
+
+.navbarUser {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.userEmail {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.logoutButton {
+  background-color: transparent;
+  color: var(--error);
+  border: 1px solid var(--error);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-sm);
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-md);
+}
+
+.logoutButton:hover {
+  background-color: var(--error);
+  color: white;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: var(--space-4);
+  }
+  
+  .navbarMenu {
+    width: 100%;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+  
+  .navbarUser {
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+  }
+  
+  .navbarLink::after {
+    display: none;
+  }
+}

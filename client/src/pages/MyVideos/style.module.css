@@ -1,0 +1,285 @@
+@import '@/styles/variables.module.css';
+
+.myVideosContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pageHeader h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.addVideoButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--secondary);
+  color: white;
+  font-weight: 500;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+}
+
+.addVideoButton:hover {
+  background-color: var(--secondary-dark);
+  text-decoration: none;
+  color: white;
+}
+
+.videosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--space-6);
+}
+
+.videoCard {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-color);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.videoCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.videoCardHeader {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.videoTitle {
+  margin: 0;
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.deleteButton {
+  background-color: transparent;
+  color: var(--error);
+  font-size: var(--font-xl);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color var(--transition-fast);
+}
+
+.deleteButton:hover {
+  background-color: rgba(229, 62, 62, 0.1);
+}
+
+.videoCardBody {
+  padding: var(--space-5);
+  flex: 1;
+}
+
+.videoDescription {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-5);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 4.8rem;
+}
+
+.videoDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background-color: var(--primary-dark);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+}
+
+.videoDetail {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-sm);
+}
+
+.detailLabel {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.detailValue {
+  color: var(--text-primary);
+  text-align: right;
+  word-break: break-word;
+}
+
+.videoCardFooter {
+  padding: var(--space-5);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.viewButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background-color: var(--secondary);
+  color: white;
+  font-weight: 500;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+  width: 100%;
+}
+
+.viewButton:hover {
+  background-color: var(--secondary-dark);
+  text-decoration: none;
+  color: white;
+}
+
+.loadingMessage,
+.errorMessage,
+.noVideosMessage {
+  text-align: center;
+  padding: var(--space-12);
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+}
+
+.noVideosMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--text-secondary);
+}
+
+.noVideosMessage svg {
+  width: 64px;
+  height: 64px;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.addVideoLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--secondary);
+  color: white;
+  font-weight: 500;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+}
+
+.addVideoLink:hover {
+  background-color: var(--secondary-dark);
+  text-decoration: none;
+  color: white;
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modalContainer {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  width: 90%;
+  max-width: 500px;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+}
+
+.modalContainer h3 {
+  margin-bottom: var(--space-4);
+  color: var(--text-primary);
+}
+
+.modalContainer p {
+  margin-bottom: var(--space-6);
+  color: var(--text-secondary);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .videosGrid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .pageHeader {
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+  
+  .videosGrid {
+    grid-template-columns: 1fr;
+  }
+}

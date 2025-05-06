@@ -1,13 +1,14 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import SignupPage from './pages/SignupPage';
-import LoginPage from './pages/LoginPage';
-import UploadVideoPage from './pages/UploadVideoPage';
-import MyVideosPage from './pages/MyVideosPage';
-import Navbar from './components/Navbar';
-import './styles/App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import SignupPage from "./pages/Auth/Signup";
+import LoginPage from "./pages/Auth/Login";
+import UploadVideoPage from "./pages/UploadVideo/page";
+import MyVideosPage from "./pages/MyVideos/page";
+import Navbar from "./components/Navbar";
+import styles from "@/styles/App.module.css";
+import { NotificationProvider } from "./context/NotificationContext";
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -20,12 +21,18 @@ const queryClient = new QueryClient({
 });
 
 // Protected route component
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { authState } = useAuth();
   const { isAuthenticated, isLoading } = authState;
 
   if (isLoading) {
-    return <div className="loading-container">Loading...</div>;
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
@@ -41,21 +48,21 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route 
-        path="/upload-video" 
+      <Route
+        path="/upload-video"
         element={
           <ProtectedRoute>
             <UploadVideoPage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/my-videos" 
+      <Route
+        path="/my-videos"
         element={
           <ProtectedRoute>
             <MyVideosPage />
           </ProtectedRoute>
-        } 
+        }
       />
       <Route path="/" element={<Navigate to="/my-videos" replace />} />
     </Routes>
@@ -68,12 +75,14 @@ const App: React.FC = () => {
     <Router>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <div className="app-container">
-            <Navbar />
-            <main className="main-content">
-              <AppRoutes />
-            </main>
-          </div>
+          <NotificationProvider>
+            <div className={styles.appContainer}>
+              <Navbar />
+              <main className={styles.mainContent}>
+                <AppRoutes />
+              </main>
+            </div>
+          </NotificationProvider>
         </AuthProvider>
       </QueryClientProvider>
     </Router>
