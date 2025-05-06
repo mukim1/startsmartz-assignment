@@ -1,14 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import videoService from '../services/api';
 import type { UploadProgress } from '../types';
-// import { UploadProgress } from '../types';
 
 // Calculate optimal chunk size and number of parts
 const calculateChunks = (fileSize: number) => {
   // Minimum chunk size 5MB (except for the last chunk)
   const MIN_CHUNK_SIZE = 5 * 1024 * 1024;
-  // Maximum chunk size 100MB (for better UI feedback)
-  const MAX_CHUNK_SIZE = 100 * 1024 * 1024;
+  // Maximum chunk size 50MB (for better UI feedback)
+  const MAX_CHUNK_SIZE = 50 * 1024 * 1024;
   
   // Calculate optimal number of chunks
   let numParts = Math.ceil(fileSize / MAX_CHUNK_SIZE);
@@ -30,7 +29,7 @@ const calculateChunks = (fileSize: number) => {
 export const useVideoUpload = () => {
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [cancelUpload, setCancelUpload] = useState(false);
+  const cancelUploadRef = useRef(false);
 
   // Upload a video file with title and description
   const uploadVideo = useCallback(async (
@@ -39,7 +38,7 @@ export const useVideoUpload = () => {
     file: File
   ) => {
     setIsUploading(true);
-    setCancelUpload(false);
+    cancelUploadRef.current = false;
     
     try {
       // Calculate chunks
@@ -71,10 +70,13 @@ export const useVideoUpload = () => {
       }));
       
       // Prepare parts for upload
-      const parts = [];
+      const uploadedParts = [];
+      let uploadedPartCount = 0;
+      
       for (let partNumber = 1; partNumber <= numParts; partNumber++) {
         // Check if upload was cancelled
-        if (cancelUpload) {
+        if (cancelUploadRef.current) {
+          console.log("Upload cancelled by user");
           await videoService.abortUpload(initResponse.videoId);
           setUploadProgress(prev => ({
             ...prev!,
@@ -84,41 +86,111 @@ export const useVideoUpload = () => {
           return { success: false, status: 'canceled' };
         }
         
-        // Calculate chunk start and end
-        const start = (partNumber - 1) * chunkSize;
-        const end = Math.min(partNumber * chunkSize, file.size);
-        const chunk = file.slice(start, end);
-        
-        // Get presigned URL for this part
-        const urlResponse = await videoService.getUploadUrl(
-          initResponse.videoId,
-          partNumber
-        );
-        
-        // Upload chunk to S3 directly using presigned URL
-        const etag = await videoService.uploadFilePart(
-          urlResponse.presignedUrl,
-          chunk
-        );
-        
-        // Complete part in our backend
-        await videoService.completePart(
-          initResponse.videoId,
-          partNumber,
-          etag
-        );
-        
-        // Update progress
-        parts.push({ ETag: etag, PartNumber: partNumber });
-        setUploadProgress(prev => ({
-          ...prev!,
-          uploadedParts: partNumber,
-          percentage: Math.round((partNumber / numParts) * 100),
-        }));
+        try {
+          // Calculate chunk start and end
+          const start = (partNumber - 1) * chunkSize;
+          const end = Math.min(partNumber * chunkSize, file.size);
+          const chunk = file.slice(start, end);
+          
+          // Get presigned URL for this part
+          const urlResponse = await videoService.getUploadUrl(
+            initResponse.videoId,
+            partNumber
+          );
+          
+          // Upload chunk to S3 directly using presigned URL
+          const etag = await videoService.uploadFilePart(
+            urlResponse.presignedUrl,
+            chunk
+          );
+          
+          // Log successful part upload
+          console.log(`Successfully uploaded part ${partNumber} with ETag: ${etag}`);
+          
+          // Complete part in our backend
+          await videoService.completePart(
+            initResponse.videoId,
+            partNumber,
+            etag
+          );
+          
+          // Add to uploaded parts
+          uploadedParts.push({ ETag: etag, PartNumber: partNumber });
+          uploadedPartCount++;
+          
+          // Update progress
+          setUploadProgress(prev => ({
+            ...prev!,
+            uploadedParts: uploadedPartCount,
+            percentage: Math.round((uploadedPartCount / numParts) * 100),
+          }));
+        } catch (error) {
+          console.error(`Error uploading part ${partNumber}:`, error);
+          
+          // Retry logic (you could add more sophisticated retry logic here)
+          const MAX_RETRIES = 3;
+          let retryCount = 0;
+          let retrySuccess = false;
+          
+          while (retryCount < MAX_RETRIES && !retrySuccess && !cancelUploadRef.current) {
+            retryCount++;
+            console.log(`Retrying part ${partNumber} (attempt ${retryCount}/${MAX_RETRIES})...`);
+            
+            try {
+              const start = (partNumber - 1) * chunkSize;
+              const end = Math.min(partNumber * chunkSize, file.size);
+              const chunk = file.slice(start, end);
+              
+              const urlResponse = await videoService.getUploadUrl(
+                initResponse.videoId,
+                partNumber
+              );
+              
+              const etag = await videoService.uploadFilePart(
+                urlResponse.presignedUrl,
+                chunk
+              );
+              
+              await videoService.completePart(
+                initResponse.videoId,
+                partNumber,
+                etag
+              );
+              
+              uploadedParts.push({ ETag: etag, PartNumber: partNumber });
+              uploadedPartCount++;
+              
+              setUploadProgress(prev => ({
+                ...prev!,
+                uploadedParts: uploadedPartCount,
+                percentage: Math.round((uploadedPartCount / numParts) * 100),
+              }));
+              
+              retrySuccess = true;
+            } catch (retryError) {
+              console.error(`Retry ${retryCount} for part ${partNumber} failed:`, retryError);
+              
+              // Wait before retrying (exponential backoff)
+              await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retryCount - 1)));
+            }
+          }
+          
+          // If all retries failed, abort the upload
+          if (!retrySuccess) {
+            await videoService.abortUpload(initResponse.videoId);
+            setUploadProgress(prev => ({
+              ...prev!,
+              status: 'failed',
+              error: `Failed to upload part ${partNumber} after multiple retries`,
+            }));
+            setIsUploading(false);
+            return { success: false, error: `Failed to upload part ${partNumber}` };
+          }
+        }
       }
       
       // Check if upload was cancelled
-      if (cancelUpload) {
+      if (cancelUploadRef.current) {
         await videoService.abortUpload(initResponse.videoId);
         setUploadProgress(prev => ({
           ...prev!,
@@ -129,6 +201,7 @@ export const useVideoUpload = () => {
       }
       
       // Complete the multipart upload
+      console.log("All parts uploaded, completing multipart upload");
       await videoService.completeUpload(initResponse.videoId);
       
       // Update progress to completed
@@ -153,18 +226,19 @@ export const useVideoUpload = () => {
       setIsUploading(false);
       return { success: false, error: error.message || 'Upload failed' };
     }
-  }, [cancelUpload]);
+  }, []);
 
   // Cancel the current upload
-  const cancelCurrentUpload = useCallback(() => {
+  const cancelUpload = useCallback(() => {
     if (isUploading) {
-      setCancelUpload(true);
+      console.log("Setting cancelUpload flag to true");
+      cancelUploadRef.current = true;
     }
   }, [isUploading]);
 
   return {
     uploadVideo,
-    cancelUpload: cancelCurrentUpload,
+    cancelUpload,
     uploadProgress,
     isUploading,
   };

@@ -3,9 +3,7 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDropzone } from "react-dropzone";
-// import { videoUploadSchema } from '../validation/schemas';
 import { useVideoUpload } from "../hooks/useVideoUpload";
-// import { VideoUploadFormData } from '../validation/schemas';
 import "../styles/UploadVideo.css";
 import {
   videoUploadSchema,
@@ -15,6 +13,7 @@ import {
 const UploadVideoPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const {
     register,
@@ -33,8 +32,10 @@ const UploadVideoPage: React.FC = () => {
   const onDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
+      console.log("File selected:", file.name, file.size, file.type);
       setSelectedFile(file);
       setValue("file", file);
+      setUploadError(null); // Clear any previous errors
     }
   };
 
@@ -51,34 +52,54 @@ const UploadVideoPage: React.FC = () => {
 
   // Handle form submission
   const onSubmit = async (data: VideoUploadFormData) => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      setUploadError("Please select a video file to upload");
+      return;
+    }
 
-    const result = await uploadVideo(
-      data.title,
-      data.description,
-      selectedFile
-    );
+    setUploadError(null);
+    console.log("Starting upload for file:", selectedFile.name);
+    
+    try {
+      const result = await uploadVideo(
+        data.title,
+        data.description,
+        selectedFile
+      );
 
-    if (result.success) {
-      // Reset form after successful upload
-      reset();
-      setSelectedFile(null);
+      if (result.success) {
+        console.log("Upload completed successfully!");
+        // Reset form after successful upload
+        reset();
+        setSelectedFile(null);
 
-      // Navigate to My Videos page after a short delay
-      setTimeout(() => {
-        navigate("/my-videos");
-      }, 1500);
+        // Navigate to My Videos page after a short delay
+        setTimeout(() => {
+          navigate("/my-videos");
+        }, 1500);
+      } else {
+        console.error("Upload failed:", result.error || result.status);
+        setUploadError(result.error || "Upload failed, please try again");
+      }
+    } catch (error: any) {
+      console.error("Unexpected upload error:", error);
+      setUploadError(error.message || "An unexpected error occurred");
     }
   };
 
   // Handle cancel upload
   const handleCancelUpload = () => {
+    console.log("Cancel upload requested by user");
     cancelUpload();
   };
 
   return (
     <div className="upload-container">
       <h2>Upload Video</h2>
+
+      {uploadError && (
+        <div className="error-message">{uploadError}</div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="upload-form">
         <div className="form-group">
