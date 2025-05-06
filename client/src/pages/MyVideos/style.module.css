@@ -1,8 +1,10 @@
 @import '@/styles/variables.module.css';
 
 .myVideosContainer {
-  max-width: 1200px;
+  max-width: 1100px;
+  width: 100%;
   margin: 0 auto;
+  padding: var(--space-6);
   animation: fadeIn 0.5s ease-out;
 }
 
@@ -24,12 +26,14 @@
   margin-bottom: var(--space-8);
   padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--border-color);
+  width: 100%;
 }
 
 .pageHeader h2 {
   margin: 0;
   color: var(--text-primary);
   font-weight: 600;
+  font-family: 'Lato', sans-serif;
 }
 
 .addVideoButton {
@@ -43,6 +47,7 @@
   border-radius: var(--radius-md);
   text-decoration: none;
   transition: background-color var(--transition-fast);
+  font-family: 'Lato', sans-serif;
 }
 
 .addVideoButton:hover {
@@ -53,8 +58,9 @@
 
 .videosGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--space-6);
+  width: 100%;
 }
 
 .videoCard {
@@ -66,6 +72,7 @@
   flex-direction: column;
   border: 1px solid var(--border-color);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  height: 100%;
 }
 
 .videoCard:hover {
@@ -90,6 +97,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
+  font-family: 'Lato', sans-serif;
 }
 
 .deleteButton {
@@ -124,6 +132,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-height: 4.8rem;
+  font-family: 'Lato', sans-serif;
 }
 
 .videoDetails {
@@ -139,6 +148,7 @@
   display: flex;
   justify-content: space-between;
   font-size: var(--font-sm);
+  font-family: 'Lato', sans-serif;
 }
 
 .detailLabel {
@@ -171,6 +181,7 @@
   text-decoration: none;
   transition: background-color var(--transition-fast);
   width: 100%;
+  font-family: 'Lato', sans-serif;
 }
 
 .viewButton:hover {
@@ -188,6 +199,8 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
+  font-family: 'Lato', sans-serif;
+  width: 100%;
 }
 
 .noVideosMessage {
@@ -216,6 +229,7 @@
   border-radius: var(--radius-md);
   text-decoration: none;
   transition: background-color var(--transition-fast);
+  font-family: 'Lato', sans-serif;
 }
 
 .addVideoLink:hover {
@@ -252,11 +266,13 @@
 .modalContainer h3 {
   margin-bottom: var(--space-4);
   color: var(--text-primary);
+  font-family: 'Lato', sans-serif;
 }
 
 .modalContainer p {
   margin-bottom: var(--space-6);
   color: var(--text-secondary);
+  font-family: 'Lato', sans-serif;
 }
 
 .modalActions {

@@ -6,6 +6,7 @@
   align-items: center;
   min-height: calc(100vh - 70px);
   padding: var(--space-8);
+  width: 100%;
 }
 
 .authFormContainer {
@@ -35,6 +36,7 @@
   margin-bottom: var(--space-6);
   color: var(--text-primary);
   font-weight: 600;
+  font-family: "Lato", sans-serif;
 }
 
 .authForm {
@@ -52,6 +54,7 @@
 .formGroup label {
   font-weight: 500;
   color: var(--text-primary);
+  font-family: "Lato", sans-serif;
 }
 
 .formGroup input {
@@ -62,6 +65,7 @@
   transition: border-color var(--transition-fast);
   background-color: var(--primary-dark);
   color: var(--text-primary);
+  font-family: "Lato", sans-serif;
 }
 
 .formGroup input:focus {
@@ -74,6 +78,7 @@
   color: var(--error);
   font-size: var(--font-sm);
   margin-top: var(--space-1);
+  font-family: "Lato", sans-serif;
 }
 
 .authForm .submitButton {
@@ -84,6 +89,7 @@
   border-radius: var(--radius-md);
   font-weight: 500;
   transition: background-color var(--transition-fast);
+  font-family: "Lato", sans-serif;
 }
 
 .authForm .submitButton:hover:not(:disabled) {
@@ -94,11 +100,22 @@
   margin-top: var(--space-8);
   text-align: center;
   color: var(--text-secondary);
+  font-family: "Lato", sans-serif;
 }
 
 .authFooter a {
   color: var(--accent);
   font-weight: 500;
+}
+
+.errorMessage {
+  background-color: rgba(229, 62, 62, 0.1);
+  border: 1px solid var(--error);
+  border-radius: var(--radius-md);
+  color: var(--error);
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-family: "Lato", sans-serif;
 }
 
 /* Responsive styles */

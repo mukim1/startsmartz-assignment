@@ -2,6 +2,7 @@
 
 .uploadContainer {
   max-width: 800px;
+  width: 100%;
   margin: 0 auto;
   padding: var(--space-8);
   background-color: var(--card-bg);
@@ -26,6 +27,8 @@
   margin-bottom: var(--space-6);
   text-align: center;
   color: var(--text-primary);
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
 }
 
 .uploadForm {
@@ -43,6 +46,7 @@
 .formGroup label {
   font-weight: 500;
   color: var(--text-primary);
+  font-family: 'Lato', sans-serif;
 }
 
 .formGroup input,
@@ -55,6 +59,7 @@
   background-color: var(--primary-dark);
   color: var(--text-primary);
   resize: vertical;
+  font-family: 'Lato', sans-serif;
 }
 
 .formGroup input:focus,
@@ -90,6 +95,7 @@
   align-items: center;
   gap: var(--space-2);
   color: var(--text-primary);
+  font-family: 'Lato', sans-serif;
 }
 
 .dropzoneContent svg {
@@ -103,6 +109,7 @@
   font-size: var(--font-sm);
   color: var(--text-secondary);
   margin-top: var(--space-2);
+  font-family: 'Lato', sans-serif;
 }
 
 .selectedFile {
@@ -110,6 +117,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
+  font-family: 'Lato', sans-serif;
 }
 
 .fileName {
@@ -144,12 +152,14 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  font-family: 'Lato', sans-serif;
 }
 
 .progressPercentage {
   font-weight: 700;
   font-size: var(--font-lg);
   color: var(--accent);
+  font-family: 'Lato', sans-serif;
 }
 
 .progressBarContainer {
@@ -211,6 +221,7 @@
   gap: var(--space-2);
   font-size: var(--font-sm);
   color: var(--text-secondary);
+  font-family: 'Lato', sans-serif;
 }
 
 .progressInfo {
@@ -241,6 +252,7 @@
   padding: var(--space-3);
   font-weight: 500;
   border-radius: var(--radius-md);
+  font-family: 'Lato', sans-serif;
 }
 
 .submitButton {
@@ -260,6 +272,22 @@
 
 .cancelButton:hover:not(:disabled) {
   background-color: var(--primary-light);
+}
+
+.errorText {
+  color: var(--error);
+  font-size: var(--font-sm);
+  font-family: 'Lato', sans-serif;
+}
+
+.errorMessage {
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  background-color: rgba(229, 62, 62, 0.1);
+  border: 1px solid var(--error);
+  border-radius: var(--radius-md);
+  color: var(--error);
+  font-family: 'Lato', sans-serif;
 }
 
 /* Responsive styles */
