@@ -4,9 +4,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 70px);
-  padding: var(--space-8);
+  min-height: calc(100vh - 70px - 80px); /* Account for navbar and footer */
+  padding: var(--space-8) var(--space-4);
   width: 100%;
+  background: radial-gradient(
+      circle at bottom right,
+      var(--primary-light) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at top left,
+      var(--primary-light) 0%,
+      transparent 30%
+    );
 }
 
 .authFormContainer {
@@ -15,15 +25,15 @@
   box-shadow: var(--shadow-lg);
   padding: var(--space-8);
   width: 100%;
-  max-width: 420px;
+  max-width: 450px;
   border: 1px solid var(--border-color);
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeInUp 0.5s ease-out;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -31,18 +41,38 @@
   }
 }
 
-.authFormContainer h2 {
+.authHeader {
   text-align: center;
   margin-bottom: var(--space-6);
+}
+
+.authHeader h2 {
+  margin-bottom: var(--space-2);
   color: var(--text-primary);
-  font-weight: 600;
-  font-family: "Lato", sans-serif;
+  font-size: var(--font-3xl);
+  font-weight: 700;
+  
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    var(--secondary-light) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.authSubtitle {
+  color: var(--text-secondary);
+  font-size: var(--font-md);
+  
 }
 
 .authForm {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-6);
 }
 
 .formGroup {
@@ -52,20 +82,42 @@
 }
 
 .formGroup label {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
-  font-family: "Lato", sans-serif;
+  
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.requiredField {
+  color: var(--error);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--text-tertiary);
 }
 
 .formGroup input {
+  width: 100%;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: var(--space-3);
+  padding: var(--space-3) var(--space-3) var(--space-3)
+    calc(var(--space-3) * 2 + 18px);
   font-size: var(--font-md);
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
   background-color: var(--primary-dark);
   color: var(--text-primary);
-  font-family: "Lato", sans-serif;
+  
 }
 
 .formGroup input:focus {
@@ -74,48 +126,195 @@
   box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.1);
 }
 
+.inputError {
+  border-color: var(--error) !important;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: var(--space-3);
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.passwordToggle:hover {
+  color: var(--text-primary);
+}
+
+.passwordStrength {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.strengthBar {
+  flex: 1;
+  height: 6px;
+  background-color: var(--primary-dark);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.strengthFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strengthFill.empty {
+  width: 0;
+}
+
+.strengthFill.weak {
+  background-color: var(--error);
+}
+
+.strengthFill.fair {
+  background-color: var(--warning);
+}
+
+.strengthFill.good {
+  background-color: var(--secondary);
+}
+
+.strengthFill.strong {
+  background-color: var(--success);
+}
+
+.strengthLabel {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  
+  min-width: 70px;
+  text-align: right;
+}
+
 .errorText {
   color: var(--error);
   font-size: var(--font-sm);
-  margin-top: var(--space-1);
-  font-family: "Lato", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  
 }
 
-.authForm .submitButton {
-  margin-top: var(--space-4);
-  background-color: var(--secondary);
-  color: white;
+.submitButton {
+  background-color: var(--accent);
+  color: var(--primary-dark);
+  font-weight: 600;
   padding: var(--space-3);
   border-radius: var(--radius-md);
-  font-weight: 500;
-  transition: background-color var(--transition-fast);
-  font-family: "Lato", sans-serif;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  transition: background-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
-.authForm .submitButton:hover:not(:disabled) {
-  background-color: var(--secondary-dark);
+.submitButton:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.spinner {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.authDivider {
+  display: flex;
+  align-items: center;
+  margin: var(--space-6) 0;
+  color: var(--text-tertiary);
+  font-size: var(--font-sm);
+  
+}
+
+.authDivider::before,
+.authDivider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.authDivider span {
+  padding: 0 var(--space-3);
 }
 
 .authFooter {
-  margin-top: var(--space-8);
   text-align: center;
-  color: var(--text-secondary);
-  font-family: "Lato", sans-serif;
 }
 
-.authFooter a {
+.secondaryButton {
+  display: inline-block;
+  width: 100%;
+  background-color: transparent;
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+  
+}
+
+.secondaryButton:hover {
+  background-color: var(--primary-light);
   color: var(--accent);
-  font-weight: 500;
+  text-decoration: none;
 }
 
 .errorMessage {
-  background-color: rgba(229, 62, 62, 0.1);
-  border: 1px solid var(--error);
-  border-radius: var(--radius-md);
-  color: var(--error);
   padding: var(--space-3);
   margin-bottom: var(--space-4);
-  font-family: "Lato", sans-serif;
+  background-color: rgba(229, 62, 62, 0.1);
+  border-left: 3px solid var(--error);
+  border-radius: var(--radius-md);
+  color: var(--error);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-3px);
+  }
+  40%,
+  60% {
+    transform: translateX(3px);
+  }
 }
 
 /* Responsive styles */

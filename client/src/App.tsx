@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import SignupPage from "./pages/Auth/Signup";
@@ -31,6 +31,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.loadingSpinner}></div>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -72,7 +73,7 @@ const AppRoutes: React.FC = () => {
 // Main App component
 const App: React.FC = () => {
   return (
-    <Router>
+    <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <NotificationProvider>
@@ -81,11 +82,16 @@ const App: React.FC = () => {
               <main className={styles.mainContent}>
                 <AppRoutes />
               </main>
+              <footer className={styles.footer}>
+                <div className={styles.footerContent}>
+                  <p>© 2025 VideoStream - Secure Video Upload Platform</p>
+                </div>
+              </footer>
             </div>
           </NotificationProvider>
         </AuthProvider>
       </QueryClientProvider>
-    </Router>
+    </BrowserRouter>
   );
 };
 

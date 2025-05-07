@@ -1,7 +1,7 @@
-@import '@/styles/variables.module.css';
+@import "@/styles/variables.module.css";
 
 .uploadContainer {
-  max-width: 800px;
+  max-width: 900px;
   width: 100%;
   margin: 0 auto;
   padding: var(--space-8);
@@ -23,18 +23,51 @@
   }
 }
 
-.uploadContainer h2 {
-  margin-bottom: var(--space-6);
+.uploadHeader {
   text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.uploadHeader h2 {
+  margin-bottom: var(--space-2);
   color: var(--text-primary);
-  font-family: 'Lato', sans-serif;
+  
   font-weight: 700;
+  font-size: var(--font-3xl);
+}
+
+.uploadSubtitle {
+  color: var(--text-secondary);
+  font-size: var(--font-lg);
+  
 }
 
 .uploadForm {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
+}
+
+.formLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.formColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.formSection {
+  background-color: var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .formGroup {
@@ -44,9 +77,17 @@
 }
 
 .formGroup label {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
-  font-family: 'Lato', sans-serif;
+  
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.requiredField {
+  color: var(--error);
+  font-size: var(--font-md);
 }
 
 .formGroup input,
@@ -55,11 +96,12 @@
   border-radius: var(--radius-md);
   padding: var(--space-3);
   font-size: var(--font-md);
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
   background-color: var(--primary-dark);
   color: var(--text-primary);
   resize: vertical;
-  font-family: 'Lato', sans-serif;
+  
 }
 
 .formGroup input:focus,
@@ -69,14 +111,26 @@
   box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.1);
 }
 
+.inputError {
+  border-color: var(--error) !important;
+}
+
+.inputValid {
+  border-color: var(--success) !important;
+}
+
 .dropzone {
   border: 2px dashed var(--border-color);
   border-radius: var(--radius-md);
-  padding: var(--space-8);
+  padding: var(--space-6);
   text-align: center;
   cursor: pointer;
   transition: all var(--transition-normal);
   background-color: var(--primary-dark);
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dropzone.active {
@@ -87,6 +141,12 @@
 .dropzone.hasFile {
   border-color: var(--success);
   background-color: rgba(72, 187, 120, 0.05);
+  padding: var(--space-4);
+}
+
+.dropzone.error {
+  border-color: var(--error);
+  background-color: rgba(229, 62, 62, 0.05);
 }
 
 .dropzoneContent {
@@ -95,40 +155,103 @@
   align-items: center;
   gap: var(--space-2);
   color: var(--text-primary);
-  font-family: 'Lato', sans-serif;
+  
 }
 
 .dropzoneContent svg {
-  width: 48px;
-  height: 48px;
   color: var(--text-tertiary);
   margin-bottom: var(--space-2);
+  opacity: 0.7;
+}
+
+.dropzoneOr {
+  margin: var(--space-2) 0;
+  color: var(--text-secondary);
+}
+
+.browseButton {
+  background-color: var(--accent);
+  color: var(--primary-dark);
+  font-weight: 600;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+  font-size: var(--font-sm);
+}
+
+.browseButton:hover {
+  background-color: var(--accent-hover);
 }
 
 .dropzoneHint {
   font-size: var(--font-sm);
   color: var(--text-secondary);
   margin-top: var(--space-2);
-  font-family: 'Lato', sans-serif;
+  
 }
 
 .selectedFile {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
-  font-family: 'Lato', sans-serif;
+  gap: var(--space-3);
+  width: 100%;
+  background-color: var(--primary-dark);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  
+}
+
+.filePreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-light);
+  border-radius: var(--radius-md);
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.filePreview svg {
+  color: var(--accent);
+}
+
+.fileInfo {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
 }
 
 .fileName {
   font-weight: 500;
   color: var(--text-primary);
-  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
 }
 
 .fileSize {
   font-size: var(--font-sm);
   color: var(--text-secondary);
+  
+}
+
+.removeFileButton {
+  background-color: rgba(229, 62, 62, 0.1);
+  color: var(--error);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+}
+
+.removeFileButton:hover {
+  background-color: rgba(229, 62, 62, 0.2);
 }
 
 .uploadProgressContainer {
@@ -137,6 +260,34 @@
   padding: var(--space-4);
   margin-top: var(--space-4);
   border: 1px solid var(--border-color);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.uploadProgressContainer.uploading {
+  border-left: 4px solid var(--secondary);
+}
+
+.uploadProgressContainer.completed {
+  border-left: 4px solid var(--success);
+}
+
+.uploadProgressContainer.failed {
+  border-left: 4px solid var(--error);
+}
+
+.uploadProgressContainer.canceled {
+  border-left: 4px solid var(--warning);
 }
 
 .progressHeader {
@@ -147,23 +298,54 @@
 }
 
 .progressLabel {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-family: 'Lato', sans-serif;
+  
+}
+
+.uploadingIcon {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
 
 .progressPercentage {
   font-weight: 700;
   font-size: var(--font-lg);
-  color: var(--accent);
-  font-family: 'Lato', sans-serif;
+  
+}
+
+.uploading .progressPercentage {
+  color: var(--secondary);
+}
+
+.completed .progressPercentage {
+  color: var(--success);
+}
+
+.failed .progressPercentage {
+  color: var(--error);
+}
+
+.canceled .progressPercentage {
+  color: var(--warning);
 }
 
 .progressBarContainer {
-  height: 12px;
+  height: 8px;
   background-color: var(--primary-dark);
   border-radius: var(--radius-full);
   overflow: hidden;
@@ -177,10 +359,12 @@
   left: 0;
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, 
-    var(--primary-dark) 0%, 
-    var(--primary-light) 50%, 
-    var(--primary-dark) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--primary-dark) 0%,
+    var(--primary-light) 50%,
+    var(--primary-dark) 100%
+  );
   background-size: 200% 100%;
   animation: progressShimmer 2s infinite linear;
 }
@@ -197,10 +381,13 @@
 .progressBar {
   height: 100%;
   border-radius: var(--radius-full);
-  background: linear-gradient(90deg, var(--secondary) 0%, var(--accent) 100%);
   transition: width 0.3s ease;
   position: relative;
   z-index: 2;
+}
+
+.progressBar.uploading {
+  background: linear-gradient(90deg, var(--secondary) 0%, var(--accent) 100%);
 }
 
 .progressBar.completed {
@@ -221,7 +408,7 @@
   gap: var(--space-2);
   font-size: var(--font-sm);
   color: var(--text-secondary);
-  font-family: 'Lato', sans-serif;
+  
 }
 
 .progressInfo {
@@ -233,11 +420,13 @@
 .progressSpeed {
   font-weight: 500;
   color: var(--text-primary);
+  
 }
 
 .progressTime {
   font-weight: 500;
   color: var(--text-primary);
+  
 }
 
 .formActions {
@@ -250,18 +439,22 @@
 .formActions button {
   flex: 1;
   padding: var(--space-3);
-  font-weight: 500;
+  font-weight: 600;
   border-radius: var(--radius-md);
-  font-family: 'Lato', sans-serif;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
 }
 
 .submitButton {
-  background-color: var(--secondary);
-  color: white;
+  background-color: var(--accent);
+  color: var(--primary-dark);
 }
 
 .submitButton:hover:not(:disabled) {
-  background-color: var(--secondary-dark);
+  background-color: var(--accent-hover);
 }
 
 .cancelButton {
@@ -274,10 +467,35 @@
   background-color: var(--primary-light);
 }
 
+.uploadingSpinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .errorText {
   color: var(--error);
   font-size: var(--font-sm);
-  font-family: 'Lato', sans-serif;
+  
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.validText {
+  color: var(--success);
+  font-size: var(--font-sm);
+  
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 .errorMessage {
@@ -287,20 +505,40 @@
   border: 1px solid var(--error);
   border-radius: var(--radius-md);
   color: var(--error);
-  font-family: 'Lato', sans-serif;
+  
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 /* Responsive styles */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
+  .formLayout {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
   .uploadContainer {
     padding: var(--space-6);
   }
-  
-  .dropzone {
-    padding: var(--space-6);
-  }
-  
+}
+
+@media (max-width: 576px) {
   .formActions {
+    flex-direction: column-reverse;
+  }
+
+  .selectedFile {
     flex-direction: column;
+    text-align: center;
+    gap: var(--space-2);
+  }
+
+  .fileInfo {
+    text-align: center;
+  }
+
+  .removeFileButton {
+    align-self: center;
   }
 }

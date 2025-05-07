@@ -43,6 +43,14 @@ const formatSpeed = (bytesPerSecond: number): string => {
   }
 };
 
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
+
 const UploadVideoPage: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -61,9 +69,14 @@ const UploadVideoPage: React.FC = () => {
     setValue,
     formState: { errors },
     reset,
+    watch,
   } = useForm<VideoUploadFormData>({
     resolver: zodResolver(videoUploadSchema),
   });
+
+  // Watch form values for validation feedback
+  const title = watch("title");
+  const description = watch("description");
 
   const { uploadVideo, cancelUpload, uploadProgress, isUploading } =
     useVideoUpload();
@@ -207,101 +220,286 @@ const UploadVideoPage: React.FC = () => {
 
   return (
     <div className={styles.uploadContainer}>
-      <h2>Upload Video</h2>
+      <div className={styles.uploadHeader}>
+        <h2>Upload Video</h2>
+        <p className={styles.uploadSubtitle}>Share your video with the world</p>
+      </div>
 
-      {uploadError && <div className={styles.errorMessage}>{uploadError}</div>}
+      {uploadError && (
+        <div className={styles.errorMessage}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          {uploadError}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className={styles.uploadForm}>
-        <div className={styles.formGroup}>
-          <label htmlFor="title">Title</label>
-          <input
-            id="title"
-            type="text"
-            {...register("title")}
-            disabled={isUploading}
-            placeholder="Enter video title"
-          />
-          {errors.title && (
-            <span className={styles.errorText}>{errors.title.message}</span>
-          )}
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            rows={4}
-            {...register("description")}
-            disabled={isUploading}
-            placeholder="Enter video description"
-          />
-          {errors.description && (
-            <span className={styles.errorText}>
-              {errors.description.message}
-            </span>
-          )}
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>Video File</label>
-          <div
-            {...getRootProps()}
-            className={`${styles.dropzone} ${
-              isDragActive ? styles.active : ""
-            } ${selectedFile ? styles.hasFile : ""}`}
-          >
-            <input {...getInputProps()} />
-            {selectedFile ? (
-              <div className={styles.selectedFile}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-                <p className={styles.fileName}>{selectedFile.name}</p>
-                <p className={styles.fileSize}>
-                  {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
-                </p>
+        <div className={styles.formLayout}>
+          <div className={styles.formColumn}>
+            <div className={styles.formSection}>
+              <div className={styles.formGroup}>
+                <label htmlFor="title">
+                  Title
+                  <span className={styles.requiredField}>*</span>
+                </label>
+                <input
+                  id="title"
+                  type="text"
+                  className={`${errors.title ? styles.inputError : ""} ${
+                    title && !errors.title ? styles.inputValid : ""
+                  }`}
+                  {...register("title")}
+                  disabled={isUploading}
+                  placeholder="Enter a descriptive title"
+                />
+                {errors.title ? (
+                  <span className={styles.errorText}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    {errors.title.message}
+                  </span>
+                ) : title ? (
+                  <span className={styles.validText}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Looks good!
+                  </span>
+                ) : null}
               </div>
-            ) : (
-              <div className={styles.dropzoneContent}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-                <p>Drag & drop a video file here, or click to select</p>
-                <p className={styles.dropzoneHint}>Maximum file size: 1GB</p>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="description">
+                  Description
+                  <span className={styles.requiredField}>*</span>
+                </label>
+                <textarea
+                  id="description"
+                  rows={5}
+                  className={`${errors.description ? styles.inputError : ""} ${
+                    description && !errors.description ? styles.inputValid : ""
+                  }`}
+                  {...register("description")}
+                  disabled={isUploading}
+                  placeholder="Describe your video content"
+                ></textarea>
+                {errors.description ? (
+                  <span className={styles.errorText}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    {errors.description.message}
+                  </span>
+                ) : description ? (
+                  <span className={styles.validText}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Looks good!
+                  </span>
+                ) : null}
               </div>
-            )}
+            </div>
           </div>
-          {errors.file && (
-            <span className={styles.errorText}>{errors.file.message}</span>
-          )}
+
+          <div className={styles.formColumn}>
+            <div className={styles.formSection}>
+              <div className={styles.formGroup}>
+                <label>
+                  Video File
+                  <span className={styles.requiredField}>*</span>
+                </label>
+                <div
+                  {...getRootProps()}
+                  className={`${styles.dropzone} ${
+                    isDragActive ? styles.active : ""
+                  } ${selectedFile ? styles.hasFile : ""} ${
+                    errors.file ? styles.error : ""
+                  }`}
+                >
+                  <input {...getInputProps()} />
+                  {selectedFile ? (
+                    <div className={styles.selectedFile}>
+                      <div className={styles.filePreview}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="36"
+                          height="36"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                          <rect
+                            x="1"
+                            y="5"
+                            width="15"
+                            height="14"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                        </svg>
+                      </div>
+                      <div className={styles.fileInfo}>
+                        <p className={styles.fileName}>{selectedFile.name}</p>
+                        <p className={styles.fileSize}>
+                          {formatFileSize(selectedFile.size)}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        className={styles.removeFileButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedFile(null);
+                          setValue("file", undefined as any);
+                        }}
+                        disabled={isUploading}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className={styles.dropzoneContent}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="48"
+                        height="48"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      {isDragActive ? (
+                        <p>Drop your video file here</p>
+                      ) : (
+                        <>
+                          <p>Drag & drop your video file here</p>
+                          <p className={styles.dropzoneOr}>or</p>
+                          <button type="button" className={styles.browseButton}>
+                            Browse Files
+                          </button>
+                        </>
+                      )}
+                      <p className={styles.dropzoneHint}>
+                        Maximum file size: 1GB
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {errors.file && (
+                  <span className={styles.errorText}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    {errors.file.message}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
         {uploadProgress && (
-          <div className={styles.uploadProgressContainer}>
+          <div
+            className={`${styles.uploadProgressContainer} ${
+              styles[uploadProgress.status]
+            }`}
+          >
             <div className={styles.progressHeader}>
               <span className={styles.progressLabel}>
                 {uploadProgress.status === "uploading" && (
@@ -315,6 +513,7 @@ const UploadVideoPage: React.FC = () => {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    className={styles.uploadingIcon}
                   >
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="17 8 12 3 7 8"></polyline>
@@ -429,6 +628,20 @@ const UploadVideoPage: React.FC = () => {
                 onClick={handleCancelUpload}
                 style={{ marginTop: "12px" }}
               >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
                 Cancel Upload
               </button>
             )}
@@ -451,7 +664,20 @@ const UploadVideoPage: React.FC = () => {
             onClick={() => navigate("/my-videos")}
             disabled={isUploading}
           >
-            Cancel
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+            Back to My Videos
           </button>
 
           <button
@@ -459,7 +685,44 @@ const UploadVideoPage: React.FC = () => {
             className={styles.submitButton}
             disabled={isUploading || !selectedFile}
           >
-            {isUploading ? "Uploading..." : "Upload Video"}
+            {isUploading ? (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={styles.uploadingSpinner}
+                >
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+                Uploading...
+              </>
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Upload Video
+              </>
+            )}
           </button>
         </div>
       </form>

@@ -22,7 +22,7 @@
   background-color: var(--card-bg);
   border-left: 4px solid transparent;
   width: 100%;
-  font-family: "Lato", sans-serif;
+  /* font-family: "Lato", sans-serif; */
 }
 
 .notification.success {
@@ -70,13 +70,13 @@
   font-weight: 600;
   margin-bottom: var(--space-1);
   color: var(--text-primary);
-  font-family: "Lato", sans-serif;
+  /* font-family: "Lato", sans-serif; */
 }
 
 .notificationMessage {
   color: var(--text-secondary);
   font-size: var(--font-sm);
-  font-family: "Lato", sans-serif;
+  /* font-family: "Lato", sans-serif; */
 }
 
 .closeButton {
